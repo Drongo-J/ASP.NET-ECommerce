@@ -28,15 +28,16 @@
     <tbody>
         @foreach (var item in Model.Products)
         {
+
             <tr>
                 <td>
-                    @item.ProductName
+                        @item.ProductName
                 </td>
                 <td>
-                    @item.UnitPrice
+                        @item.UnitPrice
                 </td>
                 <td>
-                    @item.UnitsInStock
+                        @item.UnitsInStock
                 </td>
                 <td>
                     <a class="btn btn-xs btn-success" asp-controller="Admin"
@@ -47,29 +48,73 @@
                    onclick="GetData(@item.ProductId);">Open</a>
                 </td>
                 <td>
-                    <a class="btn btn-xs btn-success" asp-controller="Admin"
-                   asp-action="UpdateProduct" asp-route-id="@item.ProductId">Submit Update</a>
+                    <a class="btn btn-xs btn-success" onclick="UpdateData()">Submit Update</a>
                 </td>
             </tr>
+            <tr id="@item.ProductId-territory" style="display:none; width:100% !important;">
+                <td>
+                    <input type="text" value="@item.ProductName" id="@item.ProductId-ProductName">
+                </td>
+                <td>
+                    <input type="text" value="@item.UnitPrice" id="@item.ProductId-UnitPrice">
+                </td>
+                <td>
+                    <input type="number" value="@item.UnitsInStock" id="@item.ProductId-UnitsInStock">
+                </td>
+                <td>
+                    <p style="display:none">Space</p>
+                </td>
+                <td>
+                    <p style="display:none">Space</p>
+
+                </td>
+                <td>
+                    <p style="display:none">Space</p>
+                </td>
+            </tr>
+
         }
     </tbody>
 </table>
 
 <script>
+    var currentData;
 
-        async function GetData(id){
-      //  alert(id);
+    async function GetData(id) {
         event.stopPropagation();
-    let td=document.getElementById(id);
-    td.parentElement.style="background-color:springgreen";
-        await GetProduct(id);
+        let td = document.getElementById(id);
+        var text = td.children[0].textContent;
+        let territory = document.getElementById(`${id}-territory`)
+        if (text == "Open") {
+            td.children[0].textContent = "Close";
+            territory.style.display = "block";
+        }
+        else {
+            td.children[0].textContent = "Open";
+            territory.style.display = "none";
+        }
+        var data = await GetProduct(id);
+        currentData = data;
     }
 
-    async function GetProduct(id){
+    function UpdateData(){
+        var el = document.getElementById(`${currentData.ProductId}-ProductName`)
+        console.log(el);
+
+        var newName = document.getElementById(`${currentData.ProductId}-ProductName`).value;
+        var newprice = document.getElementById(`${currentData.ProductId}-UnitPrice`).value;
+        var newCount = document.getElementById(`${currentData.ProductId}-UnitsInStock`).value;
+        currentData.ProductName = newName;
+        currentData.UnitPrice = newprice;
+        currentData.UnitsInStock = newCount;
+        console.log(currentData);
+        // Post sorgusu
+    }
+
+    async function GetProduct(id) {
         const response = await fetch(`Admin/Product?id=${id}`);
         const jsonData = await response.json();
-        console.log(jsonData);
-        alert(jsonData.productName);
+        return jsonData;
     }
 </script>
 

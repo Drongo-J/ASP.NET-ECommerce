@@ -78,7 +78,7 @@ namespace ECommerce.WebUI.Controllers
             try
             {
             _productService.Delete(id);
-            TempData.Add("message", String.Format("Your product, {0} was added successfully to cart!",id));
+            TempData.Add("message", String.Format("Your product, {0} was deleted!",id));
             }
             catch (Exception ex)
             {
