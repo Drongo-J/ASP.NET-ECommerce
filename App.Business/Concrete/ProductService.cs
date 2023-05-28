@@ -46,6 +46,13 @@ namespace App.Business.Concrete
             return list.OrderByDescending(x => x.ProductName).ToList();
         }
 
+        public List<Product> GetAllByPriceFilter(List<Product> products, bool higherToLower)
+        {
+            if (higherToLower)
+                return products.OrderBy(x => x.UnitPrice).ToList();
+            return products.OrderByDescending(x => x.UnitPrice).ToList();
+        }
+
         public List<Product> GetAllByFilterHigherToLower(bool higher = false)
         {
             throw new NotImplementedException();

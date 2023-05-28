@@ -16,16 +16,18 @@ namespace ECommerce.WebUI.Controllers
             _productService = productService;
             _categoryService = categoryService;
         }
-        public static bool FilterState { get; set; } = false;
-        public IActionResult Index(int page = 1, int category=0,bool filterAZ=false)
+        public static bool FilterState { get; set; } = true;
+        public IActionResult Index(int page = 1, int category=0, bool higherToLower = false)
         {
             int pageSize = 10;
             var products = _productService.GetAllByCategory(category);
-            products=_productService.GetAllByFilterAZ(products, filterAZ);
+            //products=_productService.GetAllByFilterAZ(products, filterAZ);
+            products = _productService.GetAllByPriceFilter(products, higherToLower);
             FilterState = !FilterState;
             var model = new ProductListViewModel
             {
-                CurrentFilterState= FilterState,
+                HigherToLower = FilterState,
+                //CurrentFilterState= FilterState,
                 Products = products.Skip((page-1)*pageSize).Take(pageSize).ToList(),
                 CurrentCategory = category,
                 PageCount=(int)Math.Ceiling(products.Count/(double)pageSize),

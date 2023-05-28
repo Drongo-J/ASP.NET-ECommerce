@@ -39,7 +39,7 @@ namespace ECommerce.WebUI.Controllers
                     UserName = model.Username,
                     Email = model.Email
                 };
-                IdentityResult result=_userManager.CreateAsync(user, model.Password).Result;
+                IdentityResult result = _userManager.CreateAsync(user, model.Password).Result;
 
                 if (result.Succeeded)
                 {
@@ -60,6 +60,10 @@ namespace ECommerce.WebUI.Controllers
 
                     _userManager.AddToRoleAsync(user, "Admin").Wait();
                     return RedirectToAction("Login", "Account");
+                }
+                else
+                {
+                    return View("Error", new ErrorViewModel{ Message= result.Errors.ElementAt(0).Description });
                 }
             }
             return View(model);

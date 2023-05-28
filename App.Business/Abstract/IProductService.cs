@@ -11,6 +11,7 @@ namespace App.Business.Abstract
     {
         List<Product> GetAll();
         List<Product> GetAllByFilterAZ(List<Product> list,bool az = false);
+        List<Product> GetAllByPriceFilter(List<Product> products,bool higherToLower = false);
         List<Product> GetAllByCategory(int categoryId);
         void Add(Product product);  
         void Update(Product product);

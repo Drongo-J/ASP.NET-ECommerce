@@ -8,6 +8,7 @@ using App.Entities.Models;
 using ECommerce.WebUI.Entities;
 using ECommerce.WebUI.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -63,4 +64,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Product}/{action=Index}/{id?}");
 
+app.UseRewriter(new RewriteOptions().AddRedirect("^$", "product"));
 app.Run();

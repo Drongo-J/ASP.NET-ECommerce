@@ -9,7 +9,8 @@ namespace ECommerce.WebUI
         public int PageCount { get; set; }
         public int PageSize { get; set; }
         public int CurrentPage { get; set; }
-        public bool CurrentFilterState { get; internal set; }
-        public Product UpdatedProduct { get; internal set; }
+        public bool CurrentFilterState { get;  set; }
+        public bool HigherToLower { get; set; }
+        public Product UpdatedProduct { get;  set; }
     }
 }

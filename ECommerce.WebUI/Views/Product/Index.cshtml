@@ -1,13 +1,13 @@
 ﻿@model ProductListViewModel
 
 <p>
-    @if (Model.CurrentFilterState)
+    @if (Model.HigherToLower)
     {
-        <a href="/product/index?page=@Model.CurrentPage&category=@Model.CurrentCategory&filterAZ=true" class="btn btn-outline-primary">A-Z</a>
+        <a href="/product/index?page=@Model.CurrentPage&category=@Model.CurrentCategory&higherToLower=false" class="btn btn-outline-primary">Higher To Lower</a>
     }
     else
     {
-        <a href="/product/index?page=@Model.CurrentPage&category=@Model.CurrentCategory&filterAZ=false" class="btn btn-outline-primary">Z-A</a>
+        <a href="/product/index?page=@Model.CurrentPage&category=@Model.CurrentCategory&higherToLower=true" class="btn btn-outline-primary">Lower To Higher</a>
     }
 </p>
 <table class="table">
@@ -27,7 +27,7 @@
                     @item.ProductName
                 </td>
                 <td>
-                    @item.UnitPrice
+                    @item.UnitPrice $
                 </td>
                 <td>
                     @item.UnitsInStock
