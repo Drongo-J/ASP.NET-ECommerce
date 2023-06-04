@@ -4,6 +4,7 @@ using ECommerce.WebUI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace ECommerce.WebUI.Controllers
 {
@@ -48,8 +49,6 @@ namespace ECommerce.WebUI.Controllers
             model.Categories = _categoryService.GetAll();
             return View(model);
         }
-
-       
 
         [HttpPost]
         public IActionResult Add(ProductAddViewModel model)

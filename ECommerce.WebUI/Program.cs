@@ -10,6 +10,7 @@ using ECommerce.WebUI.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,9 +32,27 @@ var conn = builder.Configuration.GetConnectionString("myconn");
 //builder.Services.AddDbContext<NorthwindContext>(
 //    options => options.UseSqlServer(conn));
 
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+    });
+
+
 builder.Services.AddDbContext<CustomIdentityDbContext>(opt =>
 {
     opt.UseSqlServer(conn);
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowOrigin",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
 });
 
 builder.Services.AddIdentity<CustomIdentityUser, CustomIdentityRole>()
@@ -57,7 +76,7 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseCors("AllowOrigin");
 
 app.UseSession();
 app.MapControllerRoute(

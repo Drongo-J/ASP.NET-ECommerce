@@ -28,16 +28,15 @@
     <tbody>
         @foreach (var item in Model.Products)
         {
-
             <tr>
                 <td>
-                        @item.ProductName
+                    @item.ProductName
                 </td>
                 <td>
-                        @item.UnitPrice
+                    @item.UnitPrice
                 </td>
                 <td>
-                        @item.UnitsInStock
+                    @item.UnitsInStock
                 </td>
                 <td>
                     <a class="btn btn-xs btn-success" asp-controller="Admin"
@@ -45,10 +44,10 @@
                 </td>
                 <td id="@item.ProductId">
                     <a class="btn btn-xs btn-success"
-                   onclick="GetData(@item.ProductId);">Open</a>
+                       onclick="GetData(@item.ProductId);">Open</a>
                 </td>
                 <td>
-                    <a class="btn btn-xs btn-success" onclick="UpdateData()">Submit Update</a>
+                    <a class="btn btn-xs btn-success" id="@item.ProductId-Submit" style="display:none;" onclick="UpdateData()">Submit Update</a>
                 </td>
             </tr>
             <tr id="@item.ProductId-territory" style="display:none; width:100% !important;">
@@ -62,14 +61,10 @@
                     <input type="number" value="@item.UnitsInStock" id="@item.ProductId-UnitsInStock">
                 </td>
                 <td>
-                    <p style="display:none">Space</p>
                 </td>
                 <td>
-                    <p style="display:none">Space</p>
-
                 </td>
                 <td>
-                    <p style="display:none">Space</p>
                 </td>
             </tr>
 
@@ -77,19 +72,24 @@
     </tbody>
 </table>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <script>
     var currentData;
 
     async function GetData(id) {
         event.stopPropagation();
+        var sbmt = document.getElementById(`${id}-Submit`);
+
         let td = document.getElementById(id);
         var text = td.children[0].textContent;
         let territory = document.getElementById(`${id}-territory`)
         if (text == "Open") {
+            sbmt.style.display = "block";
             td.children[0].textContent = "Close";
             territory.style.display = "block";
         }
         else {
+            sbmt.style.display = "none";
             td.children[0].textContent = "Open";
             territory.style.display = "none";
         }
@@ -97,18 +97,152 @@
         currentData = data;
     }
 
-    function UpdateData(){
-        var el = document.getElementById(`${currentData.ProductId}-ProductName`)
-        console.log(el);
-
-        var newName = document.getElementById(`${currentData.ProductId}-ProductName`).value;
-        var newprice = document.getElementById(`${currentData.ProductId}-UnitPrice`).value;
-        var newCount = document.getElementById(`${currentData.ProductId}-UnitsInStock`).value;
-        currentData.ProductName = newName;
-        currentData.UnitPrice = newprice;
-        currentData.UnitsInStock = newCount;
+    function UpdateData() {
         console.log(currentData);
+        var myID = currentData.productId;
+
+        var newName = document.getElementById(`${myID}-ProductName`).value;
+        var newprice = document.getElementById(`${myID}-UnitPrice`).value;
+        var newCount = document.getElementById(`${myID}-UnitsInStock`).value;
+        currentData.productName = newName;
+        currentData.unitPrice = newprice;
+        currentData.unitsInStock = newCount;
+        console.log(currentData);
+
         // Post sorgusu
+
+        const newProduct = {
+            productId: currentData.productId,
+            productName: currentData.productName,
+            supplierId: currentData.supplierId,
+            categoryId: currentData.categoryId,
+            quantityPerUnit: currentData.quantityPerUnit,
+            unitPrice: currentData.unitPrice,
+            unitsInStock: currentData.unitsInStock,
+            unitsOnOrder: currentData.unitsOnOrder,
+            reorderLevel: currentData.reorderLevel,
+            discontinued: currentData.discontinued,
+        };
+        console.log(newProduct);
+
+        //fetch('/Admin/UpdateProduct', {
+        //    method: 'POST',
+        //    headers: {
+        //        'Content-Type': 'application/json'
+        //    },
+        //    body: JSON.stringify(newProduct)
+        //})
+        //    .then(response => {
+        //        if (response.ok) {
+        //            return response.json();
+        //        } else {
+        //            throw new Error('Error: ' + response.status);
+        //        }
+        //    })
+        //    .then(data => {
+        //        // Request successful, handle the response
+        //        console.log(data);
+        //    })
+        //    .catch(error => {
+        //        // Request failed, handle the error
+        //        console.error(error);
+        //    });
+
+        //$.ajax({
+        //    url: '/Admin/UpdateProduct',
+        //    type: 'POST',
+        //    data: JSON.stringify(newProduct),
+        //    contentType: 'application/json',
+        //    success: function (response) {
+        //        console.log(response); // Output the response from the server
+        //    },
+        //    error: function (xhr, status, error) {
+        //        console.log(error); // Output any errors that occurred
+        //    }
+        //});
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/Admin/UpdateProduct');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    console.log(xhr.responseText); // Output the response from the server
+                } else {
+                    console.error('Error:', xhr.status); // Output the error status if the request fails
+                }
+            }
+        };
+        xhr.send(JSON.stringify(newProduct));
+
+
+        //$.ajax({
+        //    type: 'POST',
+        //    url: 'https://localhost:7290/Admin/UpdateProduct',
+        //    contentType: 'application/json',
+        //    data: JSON.stringify(newProduct),
+        //    success: function (response) {
+        //        // Request successful, handle the response
+        //        console.log(response);
+        //    },
+        //    error: function (xhr, status, error) {
+        //        // Request failed, handle the error
+        //        console.error(error);
+        //    }
+        //});
+
+        //var xhr = new XMLHttpRequest();
+        //xhr.open("POST", "/Admin/UpdateProduct", true);
+        //xhr.setRequestHeader("Content-Type", "application/json");
+        //xhr.send(JSON.stringify(newProduct));
+        //xhr.onreadystatechange = function () {
+        //    if (xhr.readyState === XMLHttpRequest.DONE) {
+        //        if (xhr.status === 200) {
+        //            // Request successful, handle the response
+        //            console.log(xhr.responseText);
+        //        } else {
+        //            // Request failed, handle the error
+        //            console.error(xhr.status);
+        //        }
+        //    }
+        //};
+        //xhr.send(JSON.stringify(product));
+
+
+        //fetch("/Admin/UpdateProduct", {
+        //    method: "POST",
+        //    headers: {
+        //        "Content-Type": "application/json"
+        //    },
+        //    body: JSON.stringify(newProduct )
+        //})
+        //    .then(response => {
+        //        if (response.ok) {
+        //            return response.json();
+        //        } else {
+        //            throw new Error("Error: " + response.status);
+        //        }
+        //    })
+        //    .then(data => {
+        //        // Request successful, handle the response
+        //        console.log(data);
+        //    })
+        //    .catch(error => {
+        //        // Request failed, handle the error
+        //        console.error(error);
+        //    });
+
+
+        //fetch("https://localhost:7290/Admin/UpdateProduct", {
+        //    method: 'POST',
+        //    headers: {
+        //        'Content-Type': 'application/json',
+        //    },
+        //    body: JSON.stringify(newProduct)
+        //})
+        //.then(response => response.json())
+        //.then(result => { console.log(result); })
+        //.catch(error => { console.error('data:', error); });
     }
 
     async function GetProduct(id) {
@@ -117,4 +251,5 @@
         return jsonData;
     }
 </script>
+
 

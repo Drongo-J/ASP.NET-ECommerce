@@ -14,7 +14,7 @@ namespace ECommerce.WebUI.Controllers
         private SignInManager<CustomIdentityUser> _signInManager;
 
         public AccountController(UserManager<CustomIdentityUser> userManager,
-            RoleManager<CustomIdentityRole> roleManager, 
+            RoleManager<CustomIdentityRole> roleManager,
             SignInManager<CustomIdentityUser> signInManager)
         {
             _userManager = userManager;
@@ -63,13 +63,13 @@ namespace ECommerce.WebUI.Controllers
                 }
                 else
                 {
-                    return View("Error", new ErrorViewModel{ Message= result.Errors.ElementAt(0).Description });
+                    return View("Error", new ErrorViewModel { Message = result.Errors.ElementAt(0).Description });
                 }
             }
             return View(model);
         }
 
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         public ActionResult RegisterEditor()
         {
             return View();
@@ -123,17 +123,18 @@ namespace ECommerce.WebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result=_signInManager.PasswordSignInAsync(model.UserName,model.Password,model.RememberMe,false).Result;
+                var result = _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, false).Result;
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index","Admin");//should change to Admin
+                    return RedirectToAction("Index", "Admin");//should change to Admin
                 }
                 ModelState.AddModelError("", "Invalid Login");
+                return View("Error", new ErrorViewModel { Message = "Invalid Login" });
             }
             return View(model);
         }
 
-  
+
         public IActionResult LogOut()
         {
             _signInManager.SignOutAsync().Wait();
